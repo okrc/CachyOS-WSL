@@ -4,11 +4,11 @@ set -ue
 
 POWERSHELL_PATH=$(wslpath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe')
 LANGUAGE_HOST=$($POWERSHELL_PATH -Command '(Get-Culture).Name' | tr -d '\r\n' | tr '-' '_')
-echo "Configuring locale for: ${LANGUAGE_HOST}.UTF-8"
+echo "Configuring locale for: ${LANGUAGE_HOST:-en_US}.UTF-8"
 sed -i "s|^#[[:space:]]*\(en_US.UTF-8 UTF-8\).*|\1|g" /etc/locale.gen
-sed -i "s|^#[[:space:]]*\(${LANGUAGE_HOST}.UTF-8 UTF-8\).*|\1|g" /etc/locale.gen
+sed -i "s|^#[[:space:]]*\(${LANGUAGE_HOST:-en_US}.UTF-8 UTF-8\).*|\1|g" /etc/locale.gen
 locale-gen
-localectl set-locale LANG=${LANGUAGE_HOST}.UTF-8
+localectl set-locale LANG=${LANGUAGE_HOST:-en_US}}.UTF-8
 export LANG=$(grep '^LANG=' /etc/locale.conf | cut -d'=' -f2)
 
 echo "Initializing pacman keyring..."
